@@ -1,6 +1,9 @@
 import React from 'react'
 import FlagButton from '@components/FlagButton/FlagButton'
-import FlagsMenu from '@components/FlagsMenu/FlagsMenu'
+import FlagsAutocomplete, {
+  FlagsAutocompleteProps
+} from '@components/FlagsAutocomplete/FlagsAutocomplete'
+import FlagsMenu, { FlagsMenuProps } from '@components/FlagsMenu/FlagsMenu'
 import {
   getCallingCodeOfCountry,
   getValidCountry
@@ -34,6 +37,20 @@ export type {
   MuiTelInputReason
 }
 
+type FlagsDropdownProps = Pick<MuiTelInputProps, 'allowSearch' | 'MenuProps'> &
+  FlagsAutocompleteProps &
+  FlagsMenuProps
+
+const FlagsDropdown = (props: FlagsDropdownProps) => {
+  const { allowSearch, MenuProps, ...restProps } = props
+
+  if (allowSearch) {
+    return <FlagsAutocomplete {...restProps} />
+  }
+
+  return <FlagsMenu {...MenuProps} {...restProps} />
+}
+
 const MuiTelInput = React.forwardRef(
   (props: MuiTelInputProps, propRef: MuiTelInputProps['ref']) => {
     const {
@@ -58,6 +75,7 @@ const MuiTelInput = React.forwardRef(
       preferredCountries,
       MenuProps,
       className,
+      allowSearch,
       flagSize = 'small',
       ...restTextFieldProps
     } = props
@@ -208,7 +226,7 @@ const MuiTelInput = React.forwardRef(
           {...restTextFieldProps}
         />
         {!disableDropdown ? (
-          <FlagsMenu
+          <FlagsDropdown
             onlyCountries={onlyCountries}
             excludedCountries={excludedCountries}
             continents={continents}
@@ -219,7 +237,8 @@ const MuiTelInput = React.forwardRef(
             langOfCountryName={langOfCountryName}
             onSelectCountry={handleChangeCountry}
             flagSize={flagSize}
-            {...MenuProps}
+            allowSearch={allowSearch}
+            MenuProps={MenuProps}
           />
         ) : null}
       </>

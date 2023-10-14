@@ -71,6 +71,7 @@
     }
   },
   "dependencies": {
+    "match-sorter": "^6.3.1",
     "@types/node": "^20.8.4",
     "libphonenumber-js": "^1.10.47"
   },
